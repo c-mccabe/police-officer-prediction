@@ -14,7 +14,37 @@ def add_descriptions_from_key(df, key):
     return descriptor_df
 
 
-def with_attributes_cleaned(key):
+def with_prediction_label(df):
+    df['label'] = 0
+    df.loc[df['did_police_officer_attend_scene_of_accident'] == 1, 'label'] = 1
+    return df
+
+
+def with_date_time(df):
+    df['date_time'] = pd.to_datetime(df['date'])
+    return df
+
+
+def with_hour_of_day(df):
+    df['hour_of_day'] = df['date_time'].dt.hour
+    return df
+
+
+def with_month_of_year(df):
+    df['month_of_year'] = df['date_time'].dt.month
+    return df
+
+
+def preprocess_df(df):
+    df = with_prediction_label(df)
+    df = with_date_time(df)
+    df = with_hour_of_day(df)
+    df = with_month_of_year(df)
+
+    return df
+
+
+def preprocess_key(key):
     key = key[key['Dataset'] == 'accidents']
     key.loc[:, 'Attribute'] = key['Attribute'].str.lower()
     clean_mapping = {'local_authority_(district)': 'local_authority_district',
@@ -27,36 +57,7 @@ def with_attributes_cleaned(key):
     return key
 
 
-def with_prediction_label(df):
-    df['label'] = 0
-    df.loc[df['did_police_officer_attend_scene_of_accident'] == 1, 'label'] = 1
-    return df
-
-
-def with_hour_of_day(df):
-    df['hour_of_day'] = pd.to_datetime(df['time']).dt.hour
-    return df
-
-
-def with_month_of_year(df):
-    df['month_of_year'] = pd.to_datetime(df['date']).dt.month
-    return df
-
-
-def with_date_time(df):
-    df['date_time'] = pd.to_datetime(df['date'])
-    return df
-
-
-def preprocess_df(df):
-    df = with_prediction_label(df)
-    df = with_hour_of_day(df)
-    df = with_month_of_year(df)
-    df = with_date_time(df)
-    return df
-
-
 def preprocess_df_and_key(df, key):
     df = preprocess_df(df)
-    key = with_attributes_cleaned(key)
+    key = preprocess_key(key)
     return df, key
