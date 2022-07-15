@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import math
 
+
 def get_aggregated_metrics_by_feature(df, feature):
     visits_df = df.groupby(feature) \
         .agg({'label': 'sum'}) \
@@ -63,5 +64,3 @@ def create_training_datasets(df):
     test_df = with_aggregated_metrics_by_feature(test_df, train_df, 'police_force')
 
     return train_df, test_df
-
-
