@@ -5,13 +5,13 @@ def get_attribute_map(key, attribute):
     return key[key['Attribute'] == attribute][['Code', 'Label']].set_index('Code').to_dict()['Label']
 
 
-def add_descriptions_from_key(df, key):
-    descriptor_df = df.copy()
+def add_values_from_key(df, key):
+    values_df = df.copy()
     key['Attribute'] = key['Attribute'].str.lower()
     for attribute in key['Attribute'].unique():
         attribute_map = get_attribute_map(key, attribute)
-        descriptor_df[attribute] = df[attribute].map(attribute_map)
-    return descriptor_df
+        values_df[attribute] = df[attribute].map(attribute_map)
+    return values_df
 
 
 def with_prediction_label(df):
