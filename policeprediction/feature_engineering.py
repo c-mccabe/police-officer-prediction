@@ -3,29 +3,14 @@ import numpy as np
 import math
 
 
-def get_aggregated_metrics_by_feature(df, feature):
-
+def with_mean_attendance_by_feature(df, feature_df, feature):
     '''
-    TODO: change this to groupby mean and check results are the same
+    Calculates the mean police attendance for each value of a categorical variable in the feature_df
     '''
-    visits_df = df.groupby(feature) \
-        .agg({'label': 'sum'}) \
+    metrics_df = feature_df.groupby(feature) \
+        .mean()['label'] \
         .reset_index() \
-        .rename(columns={'label': f'{feature}_attendance'})
-
-    accidents_df = df.groupby(feature) \
-        .agg({'label': 'count'}) \
-        .reset_index() \
-        .rename(columns={'label': f'{feature}_accidents'})
-
-    out_df = pd.merge(visits_df, accidents_df, on=feature)
-    out_df[f'{feature}_attendance_rate'] = out_df[f'{feature}_attendance'] / out_df[f'{feature}_accidents']
-
-    return out_df
-
-
-def with_aggregated_metrics_by_feature(df, feature_df, feature):
-    metrics_df = get_aggregated_metrics_by_feature(feature_df, feature)
+        .rename(columns={'label': f'{feature}_attendance_rate'})
     return pd.merge(df, metrics_df, on=feature, how='left')
 
 
@@ -64,7 +49,7 @@ def create_training_datasets(df):
 
     train_df, test_df = train_test_split(df)
 
-    train_df = with_aggregated_metrics_by_feature(train_df, train_df, 'police_force')
-    test_df = with_aggregated_metrics_by_feature(test_df, train_df, 'police_force')
+    train_df = with_mean_attendance_by_feature(train_df, train_df, 'police_force')
+    test_df = with_mean_attendance_by_feature(test_df, train_df, 'police_force')
 
     return train_df, test_df
