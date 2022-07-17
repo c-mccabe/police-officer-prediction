@@ -4,6 +4,10 @@ import math
 
 
 def get_aggregated_metrics_by_feature(df, feature):
+
+    '''
+    TODO: change this to groupby mean and check results are the same
+    '''
     visits_df = df.groupby(feature) \
         .agg({'label': 'sum'}) \
         .reset_index() \

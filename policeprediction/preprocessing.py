@@ -26,7 +26,7 @@ def with_date_time(df):
 
 
 def with_hour_of_day(df):
-    df['hour_of_day'] = df['date_time'].dt.hour
+    df['hour_of_day'] = pd.to_datetime(df['time']).dt.hour
     return df
 
 

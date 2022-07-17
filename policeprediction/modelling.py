@@ -6,7 +6,7 @@ from sklearn.metrics import roc_auc_score, f1_score, accuracy_score
 def score_predictions(y_test, y_pred, model):
     return {
         'Model': str(model),
-        'ROC AUC Score': np.round(roc_auc_score(y_test, y_pred), 3),
+        'ROC AUC score': np.round(roc_auc_score(y_test, y_pred), 3),
         'F1 score': np.round(f1_score(y_test, y_pred > 0.5), 3),
         'Accuracy score': np.round(accuracy_score(y_test, y_pred > 0.5), 3)
     }
